@@ -1,0 +1,28 @@
+{
+    "tests": [
+        {
+            "description": "the solve method produces a valid solution.",
+            "result": "F",
+            "rubric_item_id": null,
+            "message": "The solution was not valid.",
+            "advice": "Try your code on the following example:\n9.1....8.8.5.7..4.2.4....6...7......5..............83.3..6......9................\n",
+            "traceback": "Traceback (most recent call last):\n  File \"/home/vmuser_aewspdki/utils.py\", line 130, in func_wrapper\n    return func(self)\n  File \"run3.py\", line 109, in test_solve\n    advice = advice)\n  File \"/home/vmuser_aewspdki/utils.py\", line 43, in assertTrue\n    super(AINDTestCase, self).assertTrue(x, msg)\nAssertionError: False is not true : The solution was not valid.\n"
+        },
+        {
+            "description": "the README has been modified.",
+            "result": "F",
+            "rubric_item_id": null,
+            "message": null,
+            "advice": "Please answer the questions provided in the README.",
+            "traceback": "Traceback (most recent call last):\n  File \"run3.py\", line 124, in test_readme\n    advice = 'Please answer the questions provided in the README.')\n  File \"/home/vmuser_aewspdki/utils.py\", line 37, in assertNotEqual\n    super(AINDTestCase, self).assertNotEqual(a, b, msg)\nAssertionError: 0 == 0 : \n"
+        },
+        {
+            "description": "the naked_twins method applies the 'naked twins' heuristic.",
+            "result": ".",
+            "rubric_item_id": null,
+            "message": null,
+            "advice": null,
+            "traceback": ""
+        }
+    ]
+}

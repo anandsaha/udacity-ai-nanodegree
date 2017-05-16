@@ -1,0 +1,28 @@
+{
+    "tests": [
+        {
+            "result": "F",
+            "message": "The solution was not valid.",
+            "description": "the solve method produces a valid solution.",
+            "traceback": "Traceback (most recent call last):\n  File \"/home/vmuser_xmyrhizb/utils.py\", line 130, in func_wrapper\n    return func(self)\n  File \"run3.py\", line 109, in test_solve\n    advice = advice)\n  File \"/home/vmuser_xmyrhizb/utils.py\", line 43, in assertTrue\n    super(AINDTestCase, self).assertTrue(x, msg)\nAssertionError: False is not true : The solution was not valid.\n",
+            "advice": "Try your code on the following example:\n9.1....8.8.5.7..4.2.4....6...7......5..............83.3..6......9................\n",
+            "rubric_item_id": null
+        },
+        {
+            "result": ".",
+            "message": null,
+            "description": "the naked_twins method applies the 'naked twins' heuristic.",
+            "traceback": "",
+            "advice": null,
+            "rubric_item_id": null
+        },
+        {
+            "result": ".",
+            "message": null,
+            "description": "the README has been modified.",
+            "traceback": "",
+            "advice": null,
+            "rubric_item_id": null
+        }
+    ]
+}

@@ -1,0 +1,28 @@
+{
+    "tests": [
+        {
+            "traceback": "",
+            "advice": null,
+            "description": "the naked_twins method applies the 'naked twins' heuristic.",
+            "message": null,
+            "result": ".",
+            "rubric_item_id": null
+        },
+        {
+            "traceback": "",
+            "advice": null,
+            "description": "the solve method produces a valid solution.",
+            "message": null,
+            "result": ".",
+            "rubric_item_id": null
+        },
+        {
+            "traceback": "",
+            "advice": null,
+            "description": "the README has been modified.",
+            "message": null,
+            "result": ".",
+            "rubric_item_id": null
+        }
+    ]
+}

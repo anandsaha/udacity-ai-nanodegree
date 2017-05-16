@@ -1,0 +1,312 @@
+assignments = []
+
+# Utility code
+
+def cross(A, B):
+    "Cross product of elements in A and elements in B."
+    return [a+b for a in A for b in B]
+
+
+rows = 'ABCDEFGHI'
+cols = '123456789' 
+
+all_boxes = [r+c for r in rows for c in cols]
+row_units = [ [r+c for c in cols] for r in rows]    
+col_units = [ [r+c for r in rows] for c in cols]
+squ_units = [ cross(r, c) for r in ['ABC', 'DEF', 'GHI'] for c in ['123', '456', '789']]
+
+# Add additional constraint of the leading diagonals. These will get added to unitlist, 
+# units and peers data structures.
+diag_units= []
+l1 = []
+l2 = []
+for i in range(9):
+    l1.append(rows[i] + cols[i])
+    l2.append(rows[i] + cols[8-i])
+
+diag_units.append(l1)
+diag_units.append(l2)
+
+unitlist = row_units + col_units + squ_units + diag_units
+units = dict((s, [u for u in unitlist if s in u]) for s in all_boxes)
+peers = dict((s, set(sum(units[s],[]))-set([s])) for s in all_boxes)
+
+
+def assign_value(values, box, value):
+    """
+    Please use this function to update your values dictionary!
+    Assigns a value to a given box. If it updates the board record it.
+    """
+
+    # Don't waste memory appending actions that don't actually change any values
+    if values[box] == value:
+        return values
+
+    values[box] = value
+    if len(value) == 1:
+        assignments.append(values.copy())
+    return values
+
+
+def naked_twins_helper(values, units):
+    """Helper function, given a set of units (row wise, col wise or squares),
+       applies the naked twin approach to the individual unit.
+
+       First we scan the boxes in the unit for repeats of same digits.
+       If the length of the digit sequence matches the number of occurances (e.g.
+       '27' should repeat twice, '539' should repeat thrice), then we can visit all
+       the boxes in the unit other than the ones containing this digit sequence,
+       and remove the digits.
+       
+    Args:
+        values(dict): a dictionary of the form {'box_name': '123456789', ...}
+        units(list of lists): list of units
+        
+    Returns:
+        The modified 'values' data structure after application of naked twins strategy.
+    """
+    for unit in units:
+        count = {}
+        for x in unit:
+            if values[x] in count:
+                count[values[x]] += 1
+            else:
+                count[values[x]] = 1
+
+        for num in count:
+            if len(num) > 1 and len(num) == count[num]: 
+                for x in unit:
+                    if values[x] != num:
+                        for c in num:
+                            assign_value(values, x, values[x].replace(c, ''))
+    return values
+
+
+def naked_twins(values):
+    """Eliminate values using the naked twins strategy. Uses helper function.
+
+    Args:
+        values(dict): a dictionary of the form {'box_name': '123456789', ...}
+
+    Returns:
+        the values dictionary with the naked twins eliminated from peers.
+    """
+
+    # Find all instances of naked twins
+    # Eliminate the naked twins as possibilities for their peers
+
+    # Eliminate naked twins from each of row, col and square units
+    values = naked_twins_helper(values, row_units)
+    values = naked_twins_helper(values, col_units)
+    values = naked_twins_helper(values, squ_units)
+
+    return values
+ 
+
+def grid_values(values):
+    """
+    Convert values into a dict of {square: char} with '123456789' for empties.
+    Args:
+        values(string) - A grid in string form.
+    Returns:
+        A values in dictionary form
+            Keys: The boxes, e.g., 'A1'
+            Values: The value in each box, e.g., '8'. If the box has no value, then the value will be '123456789'.
+    """
+    values = dict((rows[r] + cols[c], values[r * 9 + c])  for c in range(9) for r in range(9))
+
+    for v in values:
+        if values[v] == '.':
+            values[v] = '123456789'
+
+    return values
+
+
+def display(values):
+    """
+    Display the values as a 2-D values.
+    Args:
+        values(dict): The sudoku in dictionary form
+    """
+    for r in rows:
+        for c in cols:
+            print('{0: <10}'.format(values[r + c]), end='')
+        print('')
+
+
+def eliminate(values):
+    """We inspect boxes with one element. We know that that element will not repeat 
+    in any of the peers boxes. So we eliminate that element from all peer boxes.
+    
+    Args:
+        values(dict): The sudoku in dictionary form
+    Returns:
+        values(dict): The sudoku in dictionary form after applying elimination strategy
+    """
+    singles = []
+    for b in values:
+        if len(values[b]) == 1:
+            singles.append(b)
+                
+    for s in singles:
+        for p in peers[s]:
+            #print("Eliminating {0} from {1} at location {2}".format(values[s], grid[p], p))
+            values[p] = values[p].replace(values[s], '')
+    return values
+
+
+def only_choice(values):
+    """In this we look at boxes with multiple options, and inspect if there is one 
+    out of the multiple options which only that box can be assigned to. If so - we do 
+    the assignment.
+    
+    Args:
+        values(dict): The sudoku in dictionary form
+    Returns:
+        values(dict): The sudoku in dictionary form after applying only-choice strategy
+    """
+    for unit in unitlist:
+        for box in unit:
+            v = values[box]
+            if len(v) > 1:
+                for d in '123456789':
+                    if d in v:
+                        update = True
+                        for box1 in unit:
+                            if box != box1 and d in values[box1]:
+                                update = False
+                        if update:
+                            #print("Assigning {0} to {1}".format(d, values[box]))
+                            values[box] = d
+                                                
+    return values
+                                                    
+
+def reduce_puzzle(values):
+    """This is the Constraint Propagation step where we try to eliminate as many scenarios
+    as possible by holding to the constraints on each box. We keep applying elimination and 
+    only-choice strategy till there is no further reduction in scenarios.
+    
+    Args:
+        values(dict): The sudoku in dictionary form
+    Returns:
+        values(dict): The sudoku in dictionary form after applying constraint propagation
+    """
+    stagnent = False
+    while not stagnent:
+        solved_values_before = len([box for box in values.keys() if len(values[box]) == 1])
+        values = eliminate(values)
+        values = only_choice(values)
+        solved_values_after = len([box for box in values.keys() if len(values[box]) == 1])
+        
+        if solved_values_before == solved_values_after:
+            stagnent = True
+            
+        if len([box for box in values.keys() if len(values[box]) == 0]):
+            return False
+    return values
+
+
+def search(values):
+    """This is a recursive function applying the Search method. For a given grid, we first apply 
+    constraint propagation to reduce the search space. Then we apply search in DFS pattern to try 
+    out various combinations of the possible digits.
+    
+    Args:
+        values(dict): The sudoku in dictionary form
+    Returns:
+        values(dict): The sudoku in dictionary form after applying constraint propagation and search
+    """
+    values = reduce_puzzle(values)
+
+    if values == False:
+        return False
+
+    if all(len(values[s]) == 1 for s in all_boxes): 
+        # Ok we have a grid will all single digits. Is it a valid grid?
+        if validate(values):
+            return values
+        else:
+            return False
+
+    n,index = min((len(values[s]), s) for s in all_boxes if len(values[s]) > 1)
+
+    if index is None:
+        return False # Should not happen
+
+    elements = values[index]
+    
+    for e in elements:
+        values_copy = values.copy()
+        values_copy[index] = e
+        attempt = search(values_copy)
+        if attempt:
+            return attempt
+
+    return False
+
+
+def validate(grid):
+    """Helper function to validate a given grid (in dict form)
+    
+    Args:
+        grid(dict): The solved sudoku
+        
+    Returns:
+        True if all rules are met. False otherwise.
+    """
+    for unit in unitlist:
+        s = set()
+        for u in unit:
+            if grid[u] in list('123456789'):
+                s.add(grid[u])
+        if len(s) != 9:
+            return False
+        
+    return True
+
+
+def solve(values):
+    """
+    Find the solution to a Sudoku values.
+    Args:
+        values(string): a string representing a sudoku grid.
+            Example: '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
+    Returns:
+        The dictionary representation of the final sudoku values. False if no solution exists.
+    """
+    values = grid_values(values)
+    values = search(values)
+    return values
+
+
+if __name__ == '__main__':
+    diag_sudoku_values = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
+    #diag_sudoku_values = '9.1....8.8.5.7..4.2.4....6...7......5..............83.3..6......9................' 
+    #diag_sudoku_values = '1..2......7..............7.8..5.1.2...43.85...6.4.2..9.3..............4......3..8'
+    #diag_sudoku_values = '9.1....8.8.5.7..4.2.4....6...7......5..............83.3..6......9................'
+    #diag_sudoku_values = '4.......3..9.........1...7.....1.8.....5.9.....1.2.....3...5.........7..7.......8' # D1.00
+    #diag_sudoku_values = '......3.......12..71..9......36...................56......4..67..95.......8......' # D1.01
+    #diag_sudoku_values = '....3...1..6..........9...5.......6..1.7.8.2..8.......3...1..........7..9...2....' # D1.02
+    #diag_sudoku_values = '...47..........8.........5.9..2.1...4.......6...3.6..1.7.........4..........89...' # D1.03
+    #diag_sudoku_values = '...4.....37.5............89....9......2...7......3....43............2.45.....6...' # D1.04
+    #diag_sudoku_values = '..7........5.4...........18...3.6....1.....7....8.2...62...........9.6........4..' # D1.05
+    #diag_sudoku_values = '....29.......7......3...8..........735.....161..........6...4......6.......83....' # D1.06
+    #diag_sudoku_values = '7.......8.....14...4........7..1.......4.3.......6..2........3...35.....5.......4' # D1.07
+    #diag_sudoku_values = '5.......7......2.....3...1...8.4.......7.8.......2.9...8...5.....1......6.......9' # D1.08
+    #diag_sudoku_values = '..682...........69..7.......2..........9.4..........8.......5..58...........521..' # D1.09
+    #diag_sudoku_values = '13824657965913724827495836174569281391358462782671395449132578636287149558746.132'
+    #diag_sudoku_values = '138246579659137248274958361745692813913584627826713954491325786362.7149558746.132'
+
+    values = solve(diag_sudoku_values)
+    display(values)
+    print(validate(values))
+
+    try:
+        from visualize import visualize_assignments
+        visualize_assignments(assignments)
+
+    except SystemExit:
+        pass
+    except:
+        print('We could not visualize your board due to a pygame issue. Not a problem! It is not a requirement.')
