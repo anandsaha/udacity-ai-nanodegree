@@ -10,6 +10,10 @@ class SearchTimeout(Exception):
     pass
 
 
+def my_score(game, player):
+    return game.utility(player)
+
+
 def custom_score(game, player):
     """Calculate the heuristic value of a game state from the point of view
     of the given player.
@@ -125,6 +129,82 @@ class MinimaxPlayer(IsolationPlayer):
     minimax to return a good move before the search time limit expires.
     """
 
+    def minimax_helper(self, game, depth):
+
+        player = game.active_player
+
+        if self.time_left() < self.TIMER_THRESHOLD:
+            raise SearchTimeout()
+
+        legal_moves = game.get_legal_moves()    
+
+        final_move = (-1, -1)
+        final_score = float('-inf')
+
+        if depth == 0:
+            return final_move
+
+        for move in legal_moves:
+            score = self.minimax_min_value(game.forecast_move(move), depth-1)
+            if score > final_score:
+                final_score = score
+                final_move = move
+
+        return final_move
+
+
+    def minimax_min_value(self, game, depth):
+
+        player = game.active_player
+
+        if self.time_left() < self.TIMER_THRESHOLD:
+            raise SearchTimeout()
+
+        legal_moves = game.get_legal_moves()    
+        
+        if len(legal_moves) == 0 or depth == 0:
+            return self.score(game, self)
+
+        final_score = float('+inf')
+
+        if depth == 0:
+            return final_score
+
+        for move in legal_moves:
+            score = self.minimax_max_value(game.forecast_move(move), depth-1)
+            if score < final_score:
+                final_score = score
+
+        return final_score
+
+
+    def minimax_max_value(self, game, depth):
+
+        player = game.active_player
+
+        if self.time_left() < self.TIMER_THRESHOLD:
+            raise SearchTimeout()
+
+        legal_moves = game.get_legal_moves()    
+
+        if len(legal_moves) == 0 or depth == 0:
+            return self.score(game, self)
+            #return game.utility(player)
+
+        final_score = float('-inf')
+
+        if depth == 0:
+            return final_score
+
+        for move in legal_moves:
+            score = self.minimax_min_value(game.forecast_move(move), depth-1)
+            if score > final_score:
+                final_score = score
+
+        return final_score
+
+
+
     def get_move(self, game, time_left):
         """Search for the best move from the available legal moves and return a
         result before the time limit expires.
@@ -212,8 +292,9 @@ class MinimaxPlayer(IsolationPlayer):
         if self.time_left() < self.TIMER_THRESHOLD:
             raise SearchTimeout()
 
-        # TODO: finish this function!
-        raise NotImplementedError
+        result = self.minimax_helper(game, depth)
+#print("Result -----> {0}".format(result))
+        return result
 
 
 class AlphaBetaPlayer(IsolationPlayer):
