@@ -254,12 +254,17 @@ class HumanPlayer():
 
 if __name__ == "__main__":
     from isolation import Board
+    from game_agent import custom_score
+    from game_agent import AlphaBetaPlayer
+    from game_agent import MinimaxPlayer
 
     # create an isolation board (by default 7x7)
-    player1 = RandomPlayer()
-    player2 = GreedyPlayer()
+    player1 = AlphaBetaPlayer(score_fn=custom_score)
+    #player1 = MinimaxPlayer(score_fn=custom_score)
+    player2 = RandomPlayer()
     game = Board(player1, player2)
-
+    
+    """
     # place player 1 on the board at row 2, column 3, then place player 2 on
     # the board at row 0, column 5; display the resulting board state.  Note
     # that the .apply_move() method changes the calling object in-place.
@@ -280,6 +285,7 @@ if __name__ == "__main__":
     assert(new_game.to_string() != game.to_string())
     print("\nOld state:\n{}".format(game.to_string()))
     print("\nNew state:\n{}".format(new_game.to_string()))
+    """
 
     # play the remainder of the game automatically -- outcome can be "illegal
     # move", "timeout", or "forfeit"
