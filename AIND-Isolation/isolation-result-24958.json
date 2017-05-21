@@ -3,8 +3,8 @@
         "680": {
             "rubric_items": {
                 "5510": {
-                    "result": "passed",
-                    "observation": "Correct!"
+                    "observation": "Correct!",
+                    "result": "passed"
                 }
             }
         }
