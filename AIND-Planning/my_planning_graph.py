@@ -411,20 +411,17 @@ class PlanningGraph():
         :return: bool
         """
 
-        is_inconsistant = False
-
         for a in node_a1.action.effect_add:
             for b in node_a2.action.effect_rem:
                 if a == b:
-                    is_inconsistant = True
-                    break
+                    return True
 
         for a in node_a2.action.effect_add:
             for b in node_a1.action.effect_rem:
                 if a == b:
-                    is_inconsistant = True
-                    break
-        return is_inconsistant
+                    return True
+
+        return False
 
     def interference_mutex(self, node_a1: PgNode_a, node_a2: PgNode_a) -> bool:
         """
@@ -441,20 +438,28 @@ class PlanningGraph():
         :return: bool
         """
 
-        is_inconsistant = False
 
         for a in node_a1.action.effect_add:
-            for b in node_a2.action.precond_pos:
+            for b in node_a2.action.precond_neg:
                 if a == b:
-                    is_inconsistant = True
-                    break
+                    return True
 
         for a in node_a2.action.effect_add:
+            for b in node_a1.action.precond_neg:
+                if a == b:
+                    return True
+
+        for a in node_a1.action.effect_rem:
+            for b in node_a2.action.precond_pos:
+                if a == b:
+                    return True
+
+        for a in node_a2.action.effect_rem:
             for b in node_a1.action.precond_pos:
                 if a == b:
-                    is_inconsistant = True
-                    break
-        return is_inconsistant
+                    return True
+
+        return False
 
     def competing_needs_mutex(self, node_a1: PgNode_a, node_a2: PgNode_a) -> bool:
         """
@@ -467,21 +472,17 @@ class PlanningGraph():
         :return: bool
         """
 
-        is_inconsistant = False
-
         for a in node_a1.parents:
             for b in node_a2.parents:
                 if a.is_mutex(b):
-                    is_inconsistant = True
-                    break
+                    return True
 
         for a in node_a2.parents:
             for b in node_a1.parents:
                 if a.is_mutex(b):
-                    is_inconsistant = True
-                    break
+                    return True
 
-        return is_inconsistant
+        return False
 
     def update_s_mutex(self, nodeset: set):
         """ Determine and update sibling mutual exclusion for S-level nodes
@@ -533,8 +534,6 @@ class PlanningGraph():
         :param node_s2: PgNode_s
         :return: bool
         """
-        is_inconsistant = False
-
         count = 0
         for action1 in node_s1.parents:
             for action2 in node_s2.parents:
@@ -542,9 +541,9 @@ class PlanningGraph():
                     count += 1
 
         if count == len(node_s1.parents):
-            is_inconsistant = True
+            return True
 
-        return is_inconsistant
+        return False
 
     def h_levelsum(self) -> int:
         """The sum of the level costs of the individual goals (admissible if goals independent)
