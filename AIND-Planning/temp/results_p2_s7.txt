@@ -1,0 +1,29 @@
+
+Solving Air Cargo Problem 2 using greedy_best_first_graph_search with h_1...
+
+Expansions   Goal Tests   New Nodes
+   990         992         8910   
+
+Plan length: 21  Time elapsed in seconds: 2.697371385000224
+Load(C1, P1, SFO)
+Load(C2, P2, JFK)
+Load(C3, P3, ATL)
+Fly(P1, SFO, ATL)
+Fly(P2, JFK, ATL)
+Fly(P3, ATL, SFO)
+Fly(P1, ATL, JFK)
+Unload(C1, P1, JFK)
+Fly(P1, JFK, ATL)
+Fly(P3, SFO, JFK)
+Load(C1, P3, JFK)
+Fly(P3, JFK, SFO)
+Fly(P2, ATL, SFO)
+Unload(C2, P2, SFO)
+Load(C2, P3, SFO)
+Fly(P2, SFO, ATL)
+Fly(P3, SFO, JFK)
+Unload(C1, P3, JFK)
+Fly(P3, JFK, SFO)
+Unload(C3, P3, SFO)
+Unload(C2, P3, SFO)
+
