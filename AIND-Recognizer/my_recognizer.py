@@ -17,9 +17,39 @@ def recognize(models: dict, test_set: SinglesData):
        guesses is a list of the best guess words ordered by the test set word_id
            ['WORDGUESS0', 'WORDGUESS1', 'WORDGUESS2',...]
    """
+    
+
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     probabilities = []
     guesses = []
     # TODO implement the recognizer
-    # return probabilities, guesses
-    raise NotImplementedError
+    
+    for unknown_word_index in range(test_set.num_items):
+        
+        word_probs = {}
+        max_prob = float("-inf")
+        the_word = None
+        
+        X, lengths = test_set.get_item_Xlengths(unknown_word_index)
+        
+        for word, model in models.items():
+            
+            try:
+                prob = model.score(X, lengths)
+            except:
+                prob = float("-inf")
+            
+            word_probs[word] = prob
+            
+            if prob > max_prob:
+                max_prob = prob
+                the_word = word
+     
+        probabilities.append(word_probs)
+        guesses.append(the_word)
+        
+        if the_word is None:
+            print("None found")
+    
+    return probabilities, guesses
+    
