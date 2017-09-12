@@ -87,3 +87,5 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+term2/intro-to-tensorflow/data
