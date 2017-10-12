@@ -1,0 +1,60 @@
+{
+    "critiques": {
+        "806": {
+            "rubric_items": {
+                "6512": {
+                    "observation": "Correct!",
+                    "result": "passed"
+                },
+                "6510": {
+                    "observation": "Correct!",
+                    "result": "passed"
+                },
+                "6514": {
+                    "observation": "Correct!",
+                    "result": "passed"
+                },
+                "6513": {
+                    "observation": "Correct!",
+                    "result": "passed"
+                },
+                "6511": {
+                    "observation": "Correct!",
+                    "result": "passed"
+                }
+            }
+        }
+    },
+    "tests": [
+        {
+            "rubric_item_id": "6511",
+            "traceback": "",
+            "result": ".",
+            "description": "Step 2: Create a simple RNN model for regression"
+        },
+        {
+            "rubric_item_id": "6514",
+            "traceback": "",
+            "result": ".",
+            "description": "Step 5: Create an RNN to perform multiclass classification"
+        },
+        {
+            "rubric_item_id": "6512",
+            "traceback": "",
+            "result": ".",
+            "description": "Step 3: Clean up a large text corpus"
+        },
+        {
+            "rubric_item_id": "6510",
+            "traceback": "",
+            "result": ".",
+            "description": "Step 1: Implement a function to window time series"
+        },
+        {
+            "rubric_item_id": "6513",
+            "traceback": "",
+            "result": ".",
+            "description": "Step 4: Implement a function to window a large text corpus"
+        }
+    ]
+}

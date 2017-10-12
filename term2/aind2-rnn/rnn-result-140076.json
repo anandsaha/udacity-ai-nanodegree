@@ -1,0 +1,60 @@
+{
+    "critiques": {
+        "806": {
+            "rubric_items": {
+                "6512": {
+                    "observation": "Correct!",
+                    "result": "passed"
+                },
+                "6510": {
+                    "observation": "Correct!",
+                    "result": "passed"
+                },
+                "6511": {
+                    "observation": "Correct!",
+                    "result": "passed"
+                },
+                "6513": {
+                    "observation": "```\nNot all of the tests passed.\n\n\n************************************************************************\n                         Test Failure Feedback                          \n************************************************************************\n\nFailed Test: Step 4: Implement a function to window a large text corpus\n----------------------------------------------------------------------\nValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()\n\n\n************************************************************************\n                          Test Result Summary                           \n************************************************************************\n\nStep 4: Implement a function to window a large text corpus             E\n\n\n```",
+                    "result": "failed"
+                },
+                "6514": {
+                    "observation": "Correct!",
+                    "result": "passed"
+                }
+            }
+        }
+    },
+    "tests": [
+        {
+            "result": "E",
+            "description": "Step 4: Implement a function to window a large text corpus",
+            "rubric_item_id": "6513",
+            "traceback": "ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()\n"
+        },
+        {
+            "result": ".",
+            "description": "Step 2: Create a simple RNN model for regression",
+            "rubric_item_id": "6511",
+            "traceback": ""
+        },
+        {
+            "result": ".",
+            "description": "Step 5: Create an RNN to perform multiclass classification",
+            "rubric_item_id": "6514",
+            "traceback": ""
+        },
+        {
+            "result": ".",
+            "description": "Step 3: Clean up a large text corpus",
+            "rubric_item_id": "6512",
+            "traceback": ""
+        },
+        {
+            "result": ".",
+            "description": "Step 1: Implement a function to window time series",
+            "rubric_item_id": "6510",
+            "traceback": ""
+        }
+    ]
+}
